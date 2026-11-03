@@ -1,0 +1,296 @@
+
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import ArticleCard from '../components/ArticleCard.astro';
+import ProjectCard from '../components/ProjectCard.astro';
+import { getCollection } from 'astro:content';
+import { siteConfig } from '../config/site';
+
+const allPosts = await getCollection('blog', ({ data }) => !data.draft);
+
+const recentPosts = allPosts
+  .sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf())
+  .slice(0, 3);
+
+const allProjects = await getCollection('projects');
+
+const featuredProjects = allProjects
+  .filter((p) => p.data.featured)
+  .slice(0, 3);
+---
+
+<BaseLayout>
+  <section class="hero">
+    <p class="hero-eyebrow">DEVOPS · CLOUD · AUTOMATION</p>
+
+    <h1 class="hero-title">
+      Hi, I'm {siteConfig.title}.
+    </h1>
+
+    <h2 class="hero-subtitle">
+      Building reliable infrastructure and engineering platforms.
+    </h2>
+
+    <p class="hero-description">
+      I'm a DevOps professional with 15+ years of experience
+      working across cloud infrastructure, CI/CD automation,
+      distributed systems, and platform engineering.
+      This is where I share my engineering experience,
+      projects, technical articles, and learning journey.
+    </p>
+
+    <p>
+      Hello! Welcome to my personal website. Since I have created this website recently,
+      there is not much content yet.
+      I will be regularly updating it with my latest projects, articles, and insights.
+    </p>
+
+    <div class="hero-actions">
+      <!-- <a href="/projects" class="btn btn-primary">
+        Explore Portfolio →
+      </a> -->
+
+      <a href="/blog" class="btn btn-secondary">
+        Read Articles
+      </a>
+
+      <a href="/about" class="btn btn-tertiary">
+        About Me
+      </a>
+    </div>
+  </section>
+
+  <!-- Featured Projects -->
+  <!-- {featuredProjects.length > 0 && (
+    <section class="featured-projects">
+      <div class="section-header">
+        <h2 class="section-title">Featured Projects</h2>
+        <a href="/projects" class="all-link">
+          All projects ({allProjects.length}) →
+        </a>
+      </div>
+
+      <div class="projects-grid">
+        {featuredProjects.map((proj) => (
+          <ProjectCard
+            title={proj.data.title}
+            description={proj.data.description}
+            date={proj.data.date}
+            slug={proj.id}
+            tags={proj.data.tags}
+            stars={proj.data.stars}
+            repoUrl={proj.data.repoUrl}
+            demoUrl={proj.data.demoUrl}
+            category={proj.data.category}
+            emoji={proj.data.emoji}
+          />
+        ))}
+      </div>
+    </section>
+  )} -->
+
+  <!-- Latest Articles -->
+  <section class="recent-posts">
+    <div class="section-header">
+      <h2 class="section-title">Latest Articles</h2>
+      <a href="/blog" class="all-link">
+        View all ({allPosts.length}) →
+      </a>
+    </div>
+
+    <div class="posts-list">
+      {recentPosts.map((post) => (
+        <ArticleCard post={post} />
+      ))}
+    </div>
+  </section>
+
+  <section class="connect-section">
+    <h2 class="section-title">Let's Connect</h2>
+    <p>
+      Interested in DevOps, cloud engineering, automation,
+      or technology? Find me on GitHub and LinkedIn.
+    </p>
+
+    <div class="connect-links">
+      {siteConfig.socialLinks.github && (
+        <a href={siteConfig.socialLinks.github} target="_blank" rel="noopener noreferrer">
+          GitHub ↗
+        </a>
+      )}
+
+      {siteConfig.socialLinks.linkedin && (
+        <a href={siteConfig.socialLinks.linkedin} target="_blank" rel="noopener noreferrer">
+          LinkedIn ↗
+        </a>
+      )}
+
+      {siteConfig.socialLinks.email && (
+        <a href={siteConfig.socialLinks.email}>
+          Email ↗
+        </a>
+      )}
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .hero {
+    padding: 2.5rem 0 3rem;
+    margin-bottom: 2.5rem;
+  }
+
+  .hero-eyebrow {
+    color: var(--accent);
+    font-family: var(--font-mono);
+    font-size: 0.85rem;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+  }
+
+  .hero-title {
+    font-size: 2.6rem;
+    line-height: 1.2;
+    margin-top: 1rem;
+    margin-bottom: 0.75rem;
+    letter-spacing: -0.03em;
+  }
+
+  .hero-subtitle {
+    font-size: 1.4rem;
+    font-weight: 500;
+    line-height: 1.5;
+    margin-top: 0;
+    margin-bottom: 1rem;
+  }
+
+  .hero-description {
+    font-size: 1.05rem;
+    color: var(--text-muted);
+    line-height: 1.8;
+    max-width: 700px;
+    margin-bottom: 1.75rem;
+  }
+
+  .hero-actions {
+    display: flex;
+    gap: 0.85rem;
+    flex-wrap: wrap;
+  }
+
+  .btn {
+    display: inline-block;
+    padding: 0.6rem 1.2rem;
+    font-size: 0.95rem;
+    font-weight: 600;
+    border-radius: 6px;
+    text-decoration: none;
+    transition: all 0.2s ease;
+  }
+
+  .btn-primary {
+    background: var(--accent);
+    color: #ffffff;
+  }
+
+  .btn-primary:hover {
+    background: var(--accent-hover);
+    color: #ffffff;
+    transform: translateY(-1px);
+  }
+
+  .btn-secondary {
+    background: var(--bg-surface);
+    border: 1px solid var(--border);
+    color: var(--text);
+  }
+
+  .btn-secondary:hover {
+    border-color: var(--accent);
+    color: var(--accent);
+  }
+
+  .btn-tertiary {
+    background: transparent;
+    color: var(--text-muted);
+  }
+
+  .btn-tertiary:hover {
+    color: var(--text);
+  }
+
+  .recent-posts,
+  .featured-projects,
+  .connect-section {
+    margin-top: 3rem;
+    padding-top: 1.5rem;
+  }
+
+  .section-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 1.25rem;
+    gap: 1rem;
+  }
+
+  .section-title {
+    margin: 0;
+    font-size: 1.45rem;
+    letter-spacing: -0.015em;
+  }
+
+  .all-link {
+    font-size: 0.9rem;
+    font-weight: 500;
+    color: var(--text-muted);
+    text-decoration: none;
+  }
+
+  .all-link:hover {
+    color: var(--accent);
+  }
+
+  .posts-list {
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+  }
+
+  .projects-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 1.25rem;
+  }
+
+  .connect-section p {
+    color: var(--text-muted);
+    line-height: 1.7;
+  }
+
+  .connect-links {
+    display: flex;
+    gap: 1.5rem;
+    flex-wrap: wrap;
+  }
+
+  .connect-links a {
+    color: var(--accent);
+    text-decoration: none;
+    font-weight: 600;
+  }
+
+  .connect-links a:hover {
+    text-decoration: underline;
+  }
+
+  @media (max-width: 700px) {
+    .hero-title {
+      font-size: 2.1rem;
+    }
+
+    .projects-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>
